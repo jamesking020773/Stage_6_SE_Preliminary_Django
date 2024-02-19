@@ -7,31 +7,29 @@ from django.urls import reverse
 tasks = []
 
 class NewTaskForm(forms.Form):
-    task = forms.CharField(label="New Task")
-    priority = forms.IntegerField(label="Priority", min_value=1, max_value=5)
+    task = forms.CharField(label="New Task") # Corresponds to HTML <input type="text"> element when rendered in a template.
 
 def index(request):
-    if "tasks" not in request.session:
-        request.session["tasks"] = []
-    return render(request, "tasks/index.html", {
-        "tasks": request.session["tasks"]
+    if "tasks" not in request.session: # If the Task List does not exist in this session
+        request.session["tasks"] = [] # Create an empty Task List (array)
+    return render(request, "tasks/index.html", { 
+        "tasks": request.session["tasks"] # Pass the Task List (array) to the index.html template.
     })
 
 def add(request):
-
-    #POST request used to process the data enter by the user
+    # POST request used to process the task entered by the user when they click the button on the Add Task form.
     if request.method == "POST":
-        form = NewTaskForm(request.POST) #Creates a blank form accepting request.POST that contains all the data entered by the user as an argument
-        if form.is_valid():
-            task = form.cleaned_data["task"]
-            request.session["tasks"] += [task]
-            return HttpResponseRedirect(reverse("tasks:index")) #Return the user to the list displaying the added item (confirmation)
+        form = NewTaskForm(request.POST) # Creates a blank form accepting request.POST
+        if form.is_valid(): # If the form is verified as secure (string does not contain illegal characters)
+            task = form.cleaned_data["task"] # Put the clean string in a variable
+            request.session["tasks"] += [task] # Add the task (string) to the task list (array)
+            return HttpResponseRedirect(reverse("tasks:index")) # Return to the Task List displaying the added item (confirmation). Prevents the form data from being re-submitted if the user reloads the page.
         else:
-            return render(request, "tasks/add.html", {
-                "form": form
+            return render(request, "tasks/add.html", { # If the data is not verified
+                "form": form # Re-display the form with the data and error message.
             })
 
-    #GET request used to present a blank form
+    # GET request used to present a blank form when the user clicks the New Task link on the Task List
     return render(request, "tasks/add.html", {
         "form": NewTaskForm()
     })
