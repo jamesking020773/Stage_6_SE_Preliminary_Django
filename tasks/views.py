@@ -6,7 +6,14 @@ from django.urls import reverse
 tasks = []
 
 class NewTaskForm(forms.Form):
-    task = forms.CharField(label="New Task") # Corresponds to HTML <input type="text"> element when rendered in a template.
+    task = forms.CharField(
+        label='',  # Set label to an empty string to remove it
+        widget=forms.TextInput(attrs={
+            'autofocus': 'autofocus', 
+            'id': 'task', 
+            'placeholder': 'New Task'  # Add a placeholder attribute
+        })
+    )
 
 def index(request):
     if "tasks" not in request.session: # If the Task List does not exist in this session
