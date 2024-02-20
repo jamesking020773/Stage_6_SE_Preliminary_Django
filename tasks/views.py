@@ -29,7 +29,7 @@ def add(request):
         if form.is_valid(): # If the form is verified as secure (string does not contain illegal characters)
             task = form.cleaned_data["task"] # Put the clean string in a variable
             request.session["tasks"] += [task] # Add the task (string) to the task list (array)
-            return HttpResponseRedirect(reverse("tasks:index")) # Return to the Task List displaying the added item (confirmation). Prevents the form data from being re-submitted if the user reloads the page.
+            return HttpResponseRedirect(reverse("tasks:index")) # Return to the Task List displaying the added item.
         else:
             return render(request, "tasks/add.html", { # If the data is not verified
                 "form": form # Re-display the form with the data and error message.
